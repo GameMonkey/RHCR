@@ -31,6 +31,7 @@ public:
     // params for drive model
     bool consider_rotation;
     int k_robust;
+    int delta_worktime;
 
     BasicSystem(const BasicGraph& G, MAPFSolver& solver);
     ~BasicSystem();

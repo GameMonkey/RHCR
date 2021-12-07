@@ -268,6 +268,35 @@ void BasicSystem::update_initial_constraints(list< tuple<int, int, int> >& initi
             }
         }
     }
+
+    // Martin: This is my addition for adding constraints when a robot needs to work a given time at a station.
+    // If the plans are longer than the current timestep, we add them as constraints.
+    for (int k = 0; k < num_of_drives; k++){
+
+        size_t path_size = paths[k].size() - 1;
+        bool working_on_station = true;
+        int i  = timestep + 1;
+
+        if(path_size > timestep) { // If the path isn't longer than the timestep, the agent isnt working
+            int curr_location = paths[k][timestep].location; // Where the robot is at the start of the given window
+            do {
+                int location = paths[k][i].location;
+                if(curr_location == location){
+                    initial_constraints.emplace_back(k, curr_location, i); // Add it as constraint if the location is in the plan.
+                    i++;
+                }
+                else {
+                    working_on_station = false; // If the agent's plan has moved to a new location
+                }
+
+                if(i >= (int)path_size){ // Happens if there are no more elements in the plan.
+                    working_on_station = false;
+                }
+
+            } while (working_on_station);
+        }
+
+    }
 }
 
 

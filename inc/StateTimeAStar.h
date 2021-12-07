@@ -105,6 +105,8 @@ public:
 class StateTimeAStar: public SingleAgentSolver
 {
 public:
+    int delta; // Units of work time at stations.
+
     // find path by time-space A* search
     Path run(const BasicGraph& G, const State& start, const vector<pair<int, int> >& goal_location,
                   ReservationTable& RT);

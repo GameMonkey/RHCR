@@ -19,6 +19,7 @@ void set_parameters(BasicSystem& system, const boost::program_options::variables
 	system.travel_time_window = vm["travel_time_window"].as<int>();
 	system.consider_rotation = vm["rotation"].as<bool>();
 	system.k_robust = vm["robust"].as<int>();
+	system.delta_worktime = vm["delta"].as<int>();
 	system.hold_endpoints = vm["hold_endpoints"].as<bool>();
 	system.useDummyPaths = vm["dummy_paths"].as<bool>();
 	if (vm.count("seed"))
@@ -37,6 +38,8 @@ MAPFSolver* set_solver(const BasicGraph& G, const boost::program_options::variab
 	if (solver_name == "ASTAR")
 	{
 		path_planner = new StateTimeAStar();
+        ((StateTimeAStar*)path_planner)->delta =  vm["delta"].as<int>();
+        assert(((StateTimeAStar*)path_planner)->delta >= 1); // Robots must work for at least 1 time unit.
 	}
 	else if (solver_name == "SIPP")
 	{
@@ -118,6 +121,7 @@ int main(int argc, char** argv)
 		("potential_threshold", po::value<double>()->default_value(0), "potential threshold")
 		("rotation", po::value<bool>()->default_value(false), "consider rotation")
 		("robust", po::value<int>()->default_value(0), "k-robust (for now, only work for PBS)")
+		("delta", po::value<int>()->default_value(1), "delta time units robots visit stations (for now, only work for ASTAR)")
 		("CAT", po::value<bool>()->default_value(false), "use conflict-avoidance table")
 		// ("PG", po::value<bool>()->default_value(false),
 		//        "reuse the priority graph of the goal node of the previous search")

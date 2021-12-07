@@ -4,13 +4,15 @@
 Path StateTimeAStar::updatePath(const StateTimeAStarNode* goal)
 {
     // std::cout << "Update path .. " << std::endl;
-    Path path(goal->state.timestep + 1);
+    Path path(goal->state.timestep + delta); // Delta is the time units needed to work at the station
+    //std::cout << "Delta is: " << delta << std::endl;
+    //exit(0);
     path_cost = goal->getFVal();
     // std::cout << goal->timestep << "," << path.size() <<
     //    "," << goal->conflicts << std::endl;
     num_of_conf = goal->conflicts;
     const StateTimeAStarNode* curr = goal;
-    for(int t = goal->state.timestep; t >= 0; t--)
+    for(int t = goal->state.timestep + delta - 1; t >= 0; t--) // We start from when the agent is done working.
     {
         if (curr->state.timestep > t)
         {
